@@ -14,8 +14,12 @@ create(DslContext.projectId, BuildType({
     id("AggBuild1")
     name = "Agg build 1"
 
+    type = BuildTypeSettings.Type.COMPOSITE
+
     vcs {
         root(DslContext.settingsRoot)
+
+        showDependenciesChanges = true
     }
 
     triggers {
