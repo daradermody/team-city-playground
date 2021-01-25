@@ -33,7 +33,7 @@ project {
 
 object Build1 : BuildType({
     name = "Build 1"
-
+    description = "Description of build"
     vcs {
         root(DslContext.settingsRoot)
     }
@@ -42,10 +42,17 @@ object Build1 : BuildType({
         script {
             scriptContent = "./build-script.sh"
         }
+        step {
+            conditions {
+                endsWith("something", "thing")
+            }
+        }
+
     }
 
     triggers {
         vcs {
+            branchFilter = "*test*"
         }
     }
 })
