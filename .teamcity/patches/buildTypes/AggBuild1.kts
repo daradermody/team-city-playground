@@ -26,5 +26,14 @@ create(DslContext.projectId, BuildType({
         vcs {
         }
     }
+
+    dependencies {
+        snapshot(AbsoluteId("ReconNg_Agg")) {
+        }
+        snapshot(RelativeId("Build1")) {
+        }
+        snapshot(RelativeId("Build2")) {
+        }
+    }
 }))
 
