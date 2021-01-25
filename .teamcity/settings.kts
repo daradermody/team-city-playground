@@ -28,31 +28,40 @@ version = "2020.2"
 
 project {
 
-    buildType(Build1)
+  buildType(Build1)
 }
 
 object Build1 : BuildType({
-    name = "Build 1"
-    description = "Description of build"
+  name = "Build 1"
+  description = "Description of build"
+  vcs {
+    root(DslContext.settingsRoot)
+  }
+
+  steps {
+    script {
+      name = "Set version using script"
+      scriptContent = """
+        #!/bin/bash
+        HASH=%build.vcs.number%
+        SHORT_HASH=${"$"}{HASH:0:7}
+        BUILD_COUNTER=%build.counter%
+        BUILD_NUMBER="1.0${"$"}BUILD_COUNTER.${"$"}SHORT_HASH"
+        echo "##teamcity[buildNumber '${"$"}BUILD_NUMBER']"
+      """.trimIndent()
+    }
+    script {
+      name = "build"
+      scriptContent = """
+        mkdir bin
+        echo "built artifact" > bin/compiled.txt
+      """.trimIndent()
+    }
+  }
+
+  triggers {
     vcs {
-        root(DslContext.settingsRoot)
+      branchFilter = "*test*"
     }
-
-    steps {
-        script {
-            scriptContent = "./build-script.sh"
-        }
-        step {
-            conditions {
-                endsWith("something", "thing")
-            }
-        }
-
-    }
-
-    triggers {
-        vcs {
-            branchFilter = "*test*"
-        }
-    }
+  }
 })
