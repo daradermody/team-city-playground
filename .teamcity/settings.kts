@@ -1,4 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.v2019_2.*
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.vcs
 
@@ -27,8 +28,8 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 version = "2020.2"
 
 project {
-
   buildType(Build1)
+  buildType(Build2)
 }
 
 object Build1 : BuildType({
@@ -62,6 +63,31 @@ object Build1 : BuildType({
   triggers {
     vcs {
       branchFilter = "*test*"
+    }
+  }
+})
+
+object Build2 : BuildType({
+  id("Build2")
+  name = "Build 2"
+
+  vcs {
+    root(DslContext.settingsRoot)
+  }
+
+  steps {
+    maven {
+      goals = "clean test"
+      pomLocation = ".teamcity/pom.xml"
+      runnerArgs = "-Dmaven.test.failure.ignore=true"
+    }
+    script {
+      scriptContent = "./build-script.sh"
+    }
+  }
+
+  triggers {
+    vcs {
     }
   }
 })
